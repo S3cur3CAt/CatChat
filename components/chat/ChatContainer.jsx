@@ -10,7 +10,6 @@ import ChatMessages from "./ChatMessages";
 
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
 import useTabActive from "@hooks/useTabActive";
-import { useEdgeStore } from "@lib/edgestore";
 import { MediaRoom } from "@app/_components/media-room";
 import { useSearchParams } from "next/navigation";
 
@@ -28,7 +27,6 @@ const ChatContainer = () => {
     const { currentChat, setMessages, messages, resetUnreadCount, updateSeen } = useChat(); // Data of currentChat
     const { socket } = useSocket();
     const { data: session } = useSession();
-    const { edgestore } = useEdgeStore();
 
     const searchParams = useSearchParams();
 
@@ -36,13 +34,7 @@ const ChatContainer = () => {
 
     const sendingMediaMessage = async () => {
         if (file) {
-            const res = await edgestore.publicFiles.upload({
-                file,
-                onProgressChange: (progress) => {
-                    setFileSendProgress(progress);
-                },
-            });
-            return res.url;
+            return file.url;
         }
     };
 
