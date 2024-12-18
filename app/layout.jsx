@@ -7,7 +7,6 @@ import { ToasterProvider } from "@providers/toast-provider";
 import SocketIndicator from "@components/SocketIndicator";
 
 import localFont from "next/font/local";
-import { EdgeStoreProvider } from "@lib/edgestore";
 import { siteConfig } from "@config/site";
 
 export const metadata = {
@@ -34,17 +33,15 @@ const RootLayout = ({ children }) => {
             <body
                 className={`min-h-screen transition-colors duration-150 ease-linear ${font.className}}`}
             >
-                <EdgeStoreProvider>
-                    <Provider>
-                        <SocketProvider>
-                            <ToasterProvider />
-                            <SocketIndicator />
-                            <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
-                                {children}
-                            </main>
-                        </SocketProvider>
-                    </Provider>
-                </EdgeStoreProvider>
+                <Provider>
+                    <SocketProvider>
+                        <ToasterProvider />
+                        <SocketIndicator />
+                        <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
+                            {children}
+                        </main>
+                    </SocketProvider>
+                </Provider>
             </body>
         </html>
     );
