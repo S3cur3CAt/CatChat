@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fullstack Chat App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            padding: 2rem;
+        }
+        
+        .main-container {
+            background: #374151;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            max-width: 70rem;
+            width: 100%;
+            height: 550px;
+            display: flex;
+            animation: containerFadeIn 1s ease-out;
+        }
+        
+        /* Panel Izquierdo */
+        .left-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: #374151;
+        }
+        
+        /* Logo Central Rotatorio */
+        .logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .rotating-logo {
+            font-size: 5rem;
+            animation: rotate 3s linear infinite;
+        }
+        
+        .logo {
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.8;
+            margin-bottom: 3rem;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            animation: statusFade 2.5s ease-in-out infinite;
+            font-weight: 500;
+        }
+
+        .pulsing-logo {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Panel Derecho - Gráficos Animados */
+        .right-panel {
+            width: 20rem;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 50%, #06B6D4 100%);
+        }
+        
+        /* Partículas Flotantes */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatParticle 5s ease-in-out infinite;
+        }
+        
+        .particle:nth-child(1) { left: 10%; top: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; top: 30%; animation-delay: 0.5s; }
+        .particle:nth-child(3) { left: 30%; top: 50%; animation-delay: 1s; }
+        .particle:nth-child(4) { left: 40%; top: 70%; animation-delay: 1.5s; }
+        .particle:nth-child(5) { left: 50%; top: 20%; animation-delay: 2s; }
+        .particle:nth-child(6) { left: 60%; top: 40%; animation-delay: 2.5s; }
+        .particle:nth-child(7) { left: 70%; top: 60%; animation-delay: 3s; }
+        .particle:nth-child(8) { left: 80%; top: 80%; animation-delay: 3.5s; }
+        .particle:nth-child(9) { left: 90%; top: 15%; animation-delay: 4s; }
+        .particle:nth-child(10) { left: 15%; top: 85%; animation-delay: 4.5s; }
+        .particle:nth-child(11) { left: 75%; top: 25%; animation-delay: 1.2s; }
+        .particle:nth-child(12) { left: 35%; top: 75%; animation-delay: 2.8s; }
+        
+        /* Formas Geométricas */
+        .geometric-square {
+            position: absolute;
+            top: 5rem;
+            left: 4rem;
+            width: 4rem;
+            height: 4rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem;
+            animation: rotateScale 4s ease-in-out infinite;
+        }
+        
+        .geometric-circle {
+            position: absolute;
+            top: 10rem;
+            right: 3rem;
+            width: 3rem;
+            height: 3rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: floatCircle 3s ease-in-out infinite;
+        }
+        
+        /* Icono Central Animado */
+        .central-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: centralPulse 2s ease-in-out infinite;
+        }
+        
+        .chat-icon {
+            width: 6rem;
+            height: 6rem;
+            color: rgba(255, 255, 255, 0.8);
+            animation: iconRotate 4s ease-in-out infinite;
+        }
+        
+        .glow-effect {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            filter: blur(1rem);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        
+        /* Líneas Animadas */
+        .animated-line-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: lineSlideHorizontal 3s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        .animated-line-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: lineSlideVertical 4s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+        
+        /* Decoraciones de Esquina */
+        .corner-top-right {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.4);
+            border-right: 2px solid rgba(255, 255, 255, 0.4);
+            animation: cornerPulse 2s ease-in-out infinite;
+        }
+        
+        .corner-bottom-left {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+            border-left: 2px solid rgba(255, 255, 255, 0.4);
+            animation: cornerPulse 2s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+        
+        
+        /* Animaciones */
+        @keyframes containerFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes statusFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes floatParticle {
+            0%, 100% { 
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-20px) translateX(10px) scale(1.5);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes rotateScale {
+            0%, 100% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: rotate(180deg) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes floatCircle {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-10px) translateX(5px); }
+            66% { transform: translateY(10px) translateX(-5px); }
+        }
+        
+        @keyframes centralPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        @keyframes iconRotate {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.2;
+            }
+            50% { 
+                transform: scale(1.5);
+                opacity: 0.4;
+            }
+        }
+        
+        @keyframes lineSlideHorizontal {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes lineSlideVertical {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+        
+        @keyframes cornerPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="main-container">
+        <!-- Panel Izquierdo -->
+        <div class="left-panel">
+            <!-- Logo Central Rotatorio -->
+            <div class="logo-container">
+                <div class="rotating-logo pulsing-logo">🐱</div>
+            </div>
+            
+            <!-- Título Principal -->
+            <h1 class="main-title">CatChat</h1>
+            
+            <!-- Estado -->
+            <div class="status-text" id="status">Iniciando aplicación...</div>
+        </div>
+
+        <!-- Panel Derecho - Gráficos Animados -->
+        <div class="right-panel">
+            <!-- Partículas Flotantes -->
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+
+            <!-- Formas Geométricas -->
+            <div class="geometric-square"></div>
+            <div class="geometric-circle"></div>
+
+            <!-- Icono Central Animado -->
+            <div class="central-icon">
+                <div class="glow-effect"></div>
+                <!-- Icono de Chat -->
+                <svg class="chat-icon" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                </svg>
+            </div>
+
+            <!-- Líneas Animadas -->
+            <div class="animated-line-top"></div>
+            <div class="animated-line-right"></div>
+
+            <!-- Decoraciones de Esquina -->
+            <div class="corner-top-right"></div>
+            <div class="corner-bottom-left"></div>
+        </div>
+    </div>
+
+    <script>
+        const statusMessages = [
+            'Iniciando aplicación...',
+            'Configurando servidor...',
+            'Creando túnel público...',
+            'Cargando interfaz...'
+        ];
+        
+        let currentMessageIndex = 0;
+        
+        function updateStatus() {
+            const statusElement = document.getElementById('status');
+            if (statusElement) {
+                statusElement.textContent = statusMessages[currentMessageIndex];
+                currentMessageIndex = (currentMessageIndex + 1) % statusMessages.length;
+            }
+        }
+        
+        // Actualizar mensaje cada 2.5 segundos
+        setInterval(updateStatus, 2500);
+        
+        // Escuchar cuando la aplicación esté lista
+        window.addEventListener('message', (event) => {
+            if (event.data === 'app-ready') {
+                document.getElementById('status').textContent = '¡Listo!';
+                setTimeout(() => {
+                    const container = document.querySelector('.main-container');
+                    container.style.opacity = '0';
+                    container.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+                    container.style.transform = 'scale(1.05)';
+                }, 800);
+            }
+        });
+        
+        // Función para hacer transición suave cuando se carga la app
+        window.fadeOut = function() {
+            document.getElementById('status').textContent = '¡Listo!';
+            setTimeout(() => {
+                const container = document.querySelector('.main-container');
+                container.style.opacity = '0';
+                container.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+                container.style.transform = 'scale(1.05)';
+            }, 500);
+        };
+        
+        
+        // Agregar efecto de entrada suave
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.main-container');
+            container.style.opacity = '0';
+            container.style.transform = 'scale(0.95) translateY(20px)';
+            
+            setTimeout(() => {
+                container.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                container.style.opacity = '1';
+                container.style.transform = 'scale(1) translateY(0)';
+            }, 100);
+        });

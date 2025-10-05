@@ -31,4 +31,5 @@ export const THEMES = [
   "dim",
   "nord",
   "sunset",
+  "neon", // Tema neón personalizado
 ];

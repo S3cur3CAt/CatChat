@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 .env
+SETUP_TOKEN.md

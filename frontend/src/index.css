@@ -1,3 +1,581 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Fredoka', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Context menu animations */
+.context-menu-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(-5px);
+}
+
+.context-menu-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.context-menu-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.context-menu-exit-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(-5px);
+  transition: opacity 100ms ease-in, transform 100ms ease-in;
+}
+
+/* Force chat messages to use full width */
+.chat {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.chat-bubble {
+  max-width: none !important;
+  width: fit-content !important;
+  word-wrap: break-word;
+}
+
+/* Tema Neón Personalizado */
+[data-theme="neon"] {
+  --primary: #00ffff;
+  --primary-content: #000000;
+  --secondary: #ff00ff;
+  --secondary-content: #000000;
+  --accent: #ffff00;
+  --accent-content: #000000;
+  --neutral: #1a1a2e;
+  --neutral-content: #ffffff;
+  --base-100: #0f0f23;
+  --base-200: #16213e;
+  --base-300: #1a1a2e;
+  --base-content: #ffffff;
+  --info: #00d4ff;
+  --success: #00ff88;
+  --warning: #ffaa00;
+  --error: #ff0055;
+}
+
+/* Efectos de neón para el tema neon */
+[data-theme="neon"] .btn-primary {
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+[data-theme="neon"] .btn-primary:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 40px rgba(255, 0, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+[data-theme="neon"] .input:focus {
+  border-color: #00ffff;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+[data-theme="neon"] .chat-bubble-primary {
+  background: linear-gradient(135deg, #00ffff, #ff00ff);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+[data-theme="neon"] .avatar {
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+/* Animaciones de pulso neón */
+@keyframes neon-pulse {
+  0%, 100% {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+  }
+  50% {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+[data-theme="neon"] h1, [data-theme="neon"] h2, [data-theme="neon"] h3 {
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+}
+
+/* Variables CSS personalizadas para mensajes */
+:root {
+  --message-sent-bg: #3b82f6;
+  --message-sent-text: #ffffff;
+  --message-sent-border: transparent;
+  --message-received-bg: #f1f5f9;
+  --message-received-text: #1e293b;
+  --message-received-border: transparent;
+  --message-border-radius: 12px;
+  --message-font-size: 14px;
+  --message-font-weight: 400;
+  --message-padding: 12px;
+}
+
+/* Estilos personalizados para mensajes enviados */
+.chat-bubble-primary.custom-message-sent {
+  background-color: var(--message-sent-bg) !important;
+  color: var(--message-sent-text) !important;
+  border-radius: var(--message-border-radius) !important;
+  font-size: var(--message-font-size) !important;
+  font-weight: var(--message-font-weight) !important;
+  padding: var(--message-padding) !important;
+}
+
+/* Estilos personalizados para mensajes recibidos */
+.chat-bubble.custom-message-received {
+  background-color: var(--message-received-bg) !important;
+  color: var(--message-received-text) !important;
+  border-radius: var(--message-border-radius) !important;
+  font-size: var(--message-font-size) !important;
+  font-weight: var(--message-font-weight) !important;
+  padding: var(--message-padding) !important;
+}
+
+/* Estilos para el preview en el customizer */
+.message-preview-sent {
+  background-color: var(--message-sent-bg);
+  color: var(--message-sent-text);
+  border-radius: var(--message-border-radius);
+  font-size: var(--message-font-size);
+  font-weight: var(--message-font-weight);
+  padding: var(--message-padding);
+}
+
+.message-preview-received {
+  background-color: var(--message-received-bg);
+  color: var(--message-received-text);
+  border-radius: var(--message-border-radius);
+  font-size: var(--message-font-size);
+  font-weight: var(--message-font-weight);
+  padding: var(--message-padding);
+}
+
+/* Animaciones para Profile Backgrounds */
+@keyframes gradient-xy {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes wave {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes bubble {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+}
+
+@keyframes matrix {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.7; filter: blur(2px); }
+}
+
+@keyframes gentlePulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes floatSmooth {
+  0%, 100% { 
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% { 
+    transform: translate(10px, -15px) rotate(90deg);
+  }
+  50% { 
+    transform: translate(-5px, -25px) rotate(180deg);
+  }
+  75% { 
+    transform: translate(-15px, -10px) rotate(270deg);
+  }
+}
+
+@keyframes slideDown {
+  0% { 
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(400%);
+    opacity: 0;
+  }
+}
+
+@keyframes aurora {
+  0% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+  100% { transform: translateX(50%) translateY(50%) rotate(360deg); }
+}
+
+@keyframes aurora-reverse {
+  0% { transform: translateX(50%) translateY(50%) rotate(360deg); }
+  100% { transform: translateX(-50%) translateY(-50%) rotate(0deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-gradient-xy {
+  background-size: 400% 400%;
+  animation: gradient-xy 5s ease infinite;
+}
+
+.animate-wave {
+  animation: wave 10s linear infinite;
+}
+
+.animate-aurora {
+  animation: aurora 20s linear infinite;
+}
+
+.animate-aurora-reverse {
+  animation: aurora-reverse 15s linear infinite;
+}
+
+/* Nuevas animaciones para backgrounds modernos */
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes grid-flow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(20px); }
+}
+
+@keyframes wave-slow {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(10%) translateY(-5%); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.animate-wave-slow {
+  animation: wave-slow 8s ease-in-out infinite;
+}
+
+/* Animaciones fluidas para partículas */
+@keyframes slideDown {
+  0% { 
+    transform: translateY(-100%); 
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(1000%); 
+    opacity: 0;
+  }
+}
+
+@keyframes fall {
+  0% { 
+    transform: translateY(-20px) translateX(0); 
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(110vh) translateX(20px); 
+    opacity: 0.8;
+  }
+}
+
+@keyframes rise {
+  0% { 
+    transform: translateY(0) scale(1); 
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-50vh) scale(1.2);
+  }
+  100% { 
+    transform: translateY(-110vh) scale(0.8); 
+    opacity: 0; 
+  }
+}
+
+@keyframes floatSmooth {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, -15px);
+  }
+  50% {
+    transform: translate(-5px, -25px);
+  }
+  75% {
+    transform: translate(-15px, -10px);
+  }
+}
+
+@keyframes drift {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(20px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-15px, -20px) rotate(240deg);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* New particle-only animations for hover backgrounds */
+@keyframes floatFirefly {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1); 
+    opacity: 0.6;
+  }
+  25% { 
+    transform: translate(15px, -10px) scale(1.2);
+    opacity: 1;
+  }
+  50% { 
+    transform: translate(-10px, -20px) scale(0.9);
+    opacity: 0.7;
+  }
+  75% { 
+    transform: translate(-15px, -5px) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes nebulaFloat {
+  0% { 
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.3;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(30px, -20px) rotate(180deg);
+    opacity: 0.6;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% { 
+    transform: translate(-10px, 10px) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes matrixFall {
+  0% { 
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(calc(100vh + 100px));
+    opacity: 0;
+  }
+}
+
+@keyframes matrixFallBackground {
+  0% { 
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.3;
+  }
+  95% {
+    opacity: 0.3;
+  }
+  100% { 
+    transform: translateY(calc(100vh + 20px));
+    opacity: 0;
+  }
+}
+
+@keyframes snowFall {
+  0% { 
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(100vh) translateX(20px) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes emberRise {
+  0% { 
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(-100vh) translateX(50px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes galaxyDrift {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  25% { 
+    transform: translate(20px, -10px) scale(1.2);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translate(-15px, 15px) scale(0.8);
+    opacity: 1;
+  }
+  75% { 
+    transform: translate(10px, -20px) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes quantumBlink {
+  0%, 100% { 
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes quantumJump {
+  0%, 100% { 
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  25% { 
+    transform: translate(20px, 0);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translate(20px, 20px);
+    opacity: 0.6;
+  }
+  75% { 
+    transform: translate(0, 20px);
+    opacity: 0.4;
+  }
+}
+
+@keyframes crystalFloat {
+  0%, 100% { 
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.7;
+  }
+  25% { 
+    transform: translateY(-15px) rotate(90deg) scale(1.1);
+    opacity: 1;
+  }
+  50% { 
+    transform: translateY(0) rotate(180deg) scale(0.9);
+    opacity: 0.8;
+  }
+  75% { 
+    transform: translateY(10px) rotate(270deg) scale(1.05);
+    opacity: 0.9;
+  }
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import AuthImagePattern from "../components/AuthImagePattern";
 import { Link } from "react-router-dom";
@@ -6,38 +6,65 @@ import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberCredentials, setRememberCredentials] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const { login, isLoggingIn } = useAuthStore();
 
+  // Cargar credenciales guardadas al montar el componente
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem('rememberedCredentials');
+    if (savedCredentials) {
+      const { email, password } = JSON.parse(savedCredentials);
+      setFormData({ email, password });
+      setRememberCredentials(true);
+    }
+  }, []);
+
+  // Forzar que no haya scroll en esta página
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Guardar credenciales si está marcado "recordar"
+    if (rememberCredentials) {
+      localStorage.setItem('rememberedCredentials', JSON.stringify(formData));
+    } else {
+      localStorage.removeItem('rememberedCredentials');
+    }
+    
     login(formData);
   };
 
   return (
-    <div className="h-screen grid lg:grid-cols-2">
+    <div className="max-h-screen grid lg:grid-cols-2 overflow-hidden">
       {/* Left Side - Form */}
-      <div className="flex flex-col justify-center items-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex flex-col justify-center items-center p-4 sm:p-6 min-h-screen overflow-hidden">
+        <div className="w-full max-w-md space-y-4">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="flex flex-col items-center gap-2 group">
+          <div className="text-center mb-4">
+            <div className="flex flex-col items-center gap-1 group">
               <div
-                className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20
+                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20
               transition-colors"
               >
-                <MessageSquare className="w-6 h-6 text-primary" />
+                <MessageSquare className="w-5 h-5 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
-              <p className="text-base-content/60">Sign in to your account</p>
+              <h1 className="text-xl font-bold mt-1">Welcome Back</h1>
+              <p className="text-sm text-base-content/60">Sign in to your account</p>
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Email</span>
@@ -85,6 +112,39 @@ const LoginPage = () => {
               </div>
             </div>
 
+            {/* Remember Credentials Checkbox */}
+            <div className="form-control">
+              <label className="label cursor-pointer justify-start gap-3">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary checkbox-sm"
+                  checked={rememberCredentials}
+                  onChange={(e) => setRememberCredentials(e.target.checked)}
+                />
+                <span className="label-text text-sm">Remember my credentials</span>
+              </label>
+            </div>
+
+            {/* Load Last Credentials Button */}
+            {!rememberCredentials && localStorage.getItem('rememberedCredentials') && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm text-primary"
+                  onClick={() => {
+                    const savedCredentials = localStorage.getItem('rememberedCredentials');
+                    if (savedCredentials) {
+                      const { email, password } = JSON.parse(savedCredentials);
+                      setFormData({ email, password });
+                      setRememberCredentials(true);
+                    }
+                  }}
+                >
+                  Load last used credentials
+                </button>
+              </div>
+            )}
+
             <button type="submit" className="btn btn-primary w-full" disabled={isLoggingIn}>
               {isLoggingIn ? (
                 <>
@@ -110,8 +170,8 @@ const LoginPage = () => {
 
       {/* Right Side - Image/Pattern */}
       <AuthImagePattern
-        title={"Welcome back!"}
-        subtitle={"Sign in to continue your conversations and catch up with your messages."}
+        title={""}
+        subtitle={""}
       />
     </div>
   );

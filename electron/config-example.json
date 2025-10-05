@@ -1,0 +1,9 @@
+{
+  "mode": "auto",
+  "serverUrl": "http://192.168.1.100:5000",
+  "note": "Para usar este archivo, cópialo como 'config.json' y actualiza la IP",
+  "instructions": {
+    "PC Servidor": "No necesita config.json, se detectará automáticamente como servidor",
+    "PC Cliente": "Crear config.json con la IP del PC servidor: { \"serverUrl\": \"http://IP_DEL_SERVIDOR:5000\" }"
+  }
+}
