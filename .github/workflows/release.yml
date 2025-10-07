@@ -1,0 +1,138 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            platform: win
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: mac
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      # Instalar dependencias y construir frontend
+      - name: Instalar y construir frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+      
+      # Instalar dependencias del backend (necesario para el empaquetado)
+      - name: Instalar dependencias del backend
+        working-directory: ./backend
+        run: npm ci --production
+      
+      # Instalar dependencias de Electron
+      - name: Instalar dependencias de Electron
+        working-directory: ./electron
+        run: npm ci
+      
+      # Construir y publicar aplicación Electron
+      - name: Construir aplicación Electron
+        working-directory: ./electron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            npm run build-win
+          elif [ "${{ matrix.platform }}" = "linux" ]; then
+            npm run build-linux
+          else
+            npm run build-mac
+          fi
+        shell: bash
+      
+      # Subir artefactos de Windows
+      - name: Subir instalador de Windows
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: CatChat-Windows-Setup
+          path: |
+            electron/dist/*.exe
+            electron/dist/*.exe.blockmap
+            electron/dist/latest.yml
+      
+      # Subir artefactos de Linux
+      - name: Subir AppImage de Linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: CatChat-Linux
+          path: |
+            electron/dist/*.AppImage
+            electron/dist/latest-linux.yml
+      
+      # Subir artefactos de macOS
+      - name: Subir DMG de macOS
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: CatChat-macOS
+          path: |
+            electron/dist/*.dmg
+            electron/dist/*.dmg.blockmap
+            electron/dist/latest-mac.yml
+  
+  create-release:
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+      
+      - name: Descargar todos los artefactos
+        uses: actions/download-artifact@v3
+        with:
+          path: ./artifacts
+      
+      - name: Crear Release en GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./artifacts/**/*.exe
+            ./artifacts/**/*.AppImage
+            ./artifacts/**/*.dmg
+            ./artifacts/**/*.yml
+            ./artifacts/**/*.blockmap
+          draft: false
+          prerelease: false
+          body: |
+            ## 🎉 Nueva versión de CatChat
+            
+            ### 📦 Instaladores disponibles:
+            - **Windows**: Descarga `CatChat-Setup-*.exe`
+            - **Linux**: Descarga `CatChat-*.AppImage`
+            - **macOS**: Descarga `CatChat-*.dmg`
+            
+            ### 🔄 Las actualizaciones automáticas están habilitadas
+            Si ya tienes CatChat instalado, recibirás esta actualización automáticamente.
+            
+            ### 📝 Cambios en esta versión:
+            - Ver [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

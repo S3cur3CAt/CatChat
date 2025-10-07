@@ -1,0 +1,15 @@
+{
+  "mode": "auto",
+  "serverUrl": null,
+  "description": "Configuración de CatChat - Detección Automática",
+  "modes": {
+    "auto": "Detección automática (por defecto) - Recomendado",
+    "server": "Forzar modo servidor - Solo si hay problemas",
+    "client": "Forzar modo cliente - Solo si conoces la URL del servidor"
+  },
+  "instructions": {
+    "1": "RECOMENDADO: Dejar 'mode' en 'auto' para detección automática",
+    "2": "Solo cambiar si hay problemas específicos de conectividad",
+    "3": "Para modo cliente manual: cambiar 'serverUrl' a la URL del servidor"
+  }
+}
